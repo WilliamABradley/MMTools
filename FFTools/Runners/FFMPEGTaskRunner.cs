@@ -1,13 +1,11 @@
-﻿using FFTools.Common;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 
 namespace FFTools
 {
     public class FFMPEGTaskRunner : FFTaskRunner
     {
-        public FFMPEGTaskRunner(FFMPEGTask Task, string FFMPEGPath = null)
-            : base(Path.Combine(FFToolsInfo.FFToolsDirectory(), "ffmpeg"))
+        public FFMPEGTaskRunner(FFMPEGTask Task)
+            : base("ffmpeg")
         {
             this.Task = Task;
         }

@@ -1,9 +1,7 @@
-﻿using FFTools.Common;
-using FFTools.FFProbeConfig;
+﻿using FFTools.FFProbeConfig;
 using FFTools.Options;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace FFTools
@@ -11,7 +9,7 @@ namespace FFTools
     public class FFProbeTaskRunner : FFTaskRunner
     {
         public FFProbeTaskRunner(FFProbeOptions Options)
-            : base(Path.Combine(FFToolsInfo.FFToolsDirectory(), "ffprobe"))
+            : base("ffprobe")
         {
             this.Options = Options;
             RunSync = true;

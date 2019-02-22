@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FFTools.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,9 +10,13 @@ namespace FFTools
 {
     public abstract class FFTaskRunner
     {
-        public FFTaskRunner(string ApplicationPath)
+        public FFTaskRunner(string ApplicationName)
         {
-            this.ApplicationPath = ApplicationPath;
+            ApplicationPath = Path.Combine(FFToolsConfiguration.FFExecutableDirectory, ApplicationName);
+            if (!File.Exists(ApplicationPath))
+            {
+                throw new FFExecutablesMissingException();
+            }
         }
 
         protected abstract void AddArgs(ref List<KeyValuePair<string, object>> args);
