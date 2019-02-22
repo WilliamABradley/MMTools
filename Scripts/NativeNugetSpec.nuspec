@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <description>
+        Binaries from ffbinaries are hosted on GitHub: 
+        https://github.com/vot/ffbinaries-prebuilt/releases 
+        These are simply repackaged versions of packages provided by other people.
+
+        Binaries compiled by:
+        OS X version: https://evermeet.cx/ffmpeg/
+        Linux version: http://johnvansickle.com/ffmpeg/
+        Windows version: http://ffmpeg.zeranoe.com/builds/
+        
+        This Package provides precompiled binaries only.
+        Please respect the licences of all software here - see http://ffmpeg.org/legal.html.
+        </description>
+        <license type="expression">GPL-2.0-or-later</license>
+        <requireLicenseAcceptance>true</requireLicenseAcceptance>
+        <authors>William Bradley, FFMPEG, FFBinaries, evermeet, johnvansickle, zeranoe</authors>
+    </metadata>
+</package>
