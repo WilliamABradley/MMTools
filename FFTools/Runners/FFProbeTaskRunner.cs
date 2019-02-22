@@ -4,12 +4,12 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace FFTools
+namespace FFTools.Runners
 {
     public class FFProbeTaskRunner : FFTaskRunner
     {
         public FFProbeTaskRunner(FFProbeOptions Options)
-            : base("ffprobe")
+            : base(FFAppType.FFProbe)
         {
             this.Options = Options;
             RunSync = true;
@@ -23,9 +23,9 @@ namespace FFTools
             AddArgNotNull(ref args, "show_streams", true);
         }
 
-        public new async Task<FFProbeInfo> Run()
+        public new async Task<FFProbeInfo> Run(string Arguments = null)
         {
-            await base.Run();
+            await base.Run(Arguments);
             return JsonConvert.DeserializeObject<FFProbeInfo>(OutputData);
         }
 

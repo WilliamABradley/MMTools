@@ -1,4 +1,4 @@
-﻿using System;
+﻿using FFTools.Runners;
 using System.Threading.Tasks;
 
 namespace FFTools.TestApp
@@ -7,21 +7,12 @@ namespace FFTools.TestApp
     {
         private static async Task Main(string[] args)
         {
-            var ffTask = new FFMPEGTask(new FFMPEGOptions
-            {
-                Resolution = new FFMPEGResolution(1920, 1080)
-            });
-            ffTask.AddInput(new FFMPEGInput
-            {
-                Input = "file1.mp4",
-            });
-            ffTask.AddOutput(new FFMPEGOutput
-            {
-                Output = "file2.mp4"
-            });
+            FFToolsConfiguration.RegisterExecutableDirectory();
 
-            var runner = new FFMPEGTaskRunner(ffTask);
-            await runner.Run();
+            var ffRunner = new FFRunner(FFAppType.FFMPEG);
+            await ffRunner.Run("-h");
+
+            await Task.Delay(50000);
         }
     }
 }

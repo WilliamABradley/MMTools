@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FFTools.Executables.Windows.X64" Version="4.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\FFTools\FFTools.csproj" />
   </ItemGroup>
 

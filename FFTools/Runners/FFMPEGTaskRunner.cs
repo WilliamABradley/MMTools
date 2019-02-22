@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 
-namespace FFTools
+namespace FFTools.Runners
 {
-    public class FFMPEGTaskRunner : FFTaskRunner
+    public class FFMPEGTaskRunner
+        : FFTaskRunner
     {
         public FFMPEGTaskRunner(FFMPEGTask Task)
-            : base("ffmpeg")
+            : base(FFAppType.FFMPEG)
         {
             this.Task = Task;
         }

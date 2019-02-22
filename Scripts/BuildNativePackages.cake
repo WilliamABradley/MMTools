@@ -8,8 +8,9 @@ var target = Argument("target", "Default");
 var baseDir = MakeAbsolute(Directory("../")).ToString();
 var currentDir = MakeAbsolute(Directory("./")).ToString();
 var baseSpecPath = currentDir + "/NativeNugetSpec.nuspec";
+var baseTargetPath = currentDir + "/NativeNuget.targets";
 
-var outDir = currentDir + "/output/";
+var outDir = currentDir + "/output";
 var publishDir = currentDir + "/publish";
 
 //////////////////////////////////////////////////////////////////////
@@ -101,7 +102,7 @@ Task("Collect")
 
 Task("Package")
     .Description("Creates Native Nuget Packages from Executables")
-    //.IsDependentOn("Collect")
+    .IsDependentOn("Collect")
     .Does(() =>
 {
     EnsureDirectoryExists(publishDir);
@@ -112,11 +113,8 @@ Task("Package")
     {
         var nugetID = $"FFTools.Executables.{runtime.os}.{runtime.arch}";
         var nugetSrcPath = $"runtimes/{runtime.runtimeName}/FFMPEG";
-        var filesPath = $"{outDir}{nugetSrcPath}/**";
-
-        // Write file with full Path.
-        //var fileInfo = $"{outDir}FF-EXE-{runtime.os}-{runtime.arch}";
-        //FileWriteText(fileInfo, nugetSrcPath);
+        var filesPath = $"{outDir}/{nugetSrcPath}/**";
+        var targetDest = $"build/{nugetID}.targets";
 
         var nuGetPackSettings   = new NuGetPackSettings {
             Id                       = nugetID,
@@ -127,7 +125,7 @@ Task("Package")
             NoPackageAnalysis        = true,
             Files                    = new [] {
                 new NuSpecContent { Source = filesPath },
-                //new NuSpecContent { Source = fileInfo },
+                new NuSpecContent { Source = baseTargetPath, Target = targetDest },
             },
             BasePath                 = outDir,
             OutputDirectory          = publishDir
