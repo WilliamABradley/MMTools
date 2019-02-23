@@ -8,8 +8,8 @@ var target = Argument("target", "Default");
 var baseDir = MakeAbsolute(Directory("../")).ToString();
 var currentDir = MakeAbsolute(Directory("./")).ToString();
 
-// FFTools Library
-var libraryPath = baseDir + "/FFTools/FFTools.csproj";
+// MMTools Library
+var libraryPath = baseDir + "/MMTools/MMTools.csproj";
 
 // Executable Packaging
 var baseSpecPath = currentDir + "/NativeNugetSpec.nuspec";
@@ -20,9 +20,10 @@ var outDir = currentDir + "/output";
 var publishDir = currentDir + "/publish";
 
 //////////////////////////////////////////////////////////////////////
-// FFTOOLS EXECUTABLES CONFIG
+// MMTOOLS EXECUTABLES CONFIG
 //////////////////////////////////////////////////////////////////////
 
+string PkgVersion = "1.0.0";
 string Version = "4.1";
 string WindowsVersion = Version;
 string LinuxVersion = Version;
@@ -98,6 +99,7 @@ Task("Build")
     }
     .SetConfiguration("Release")
     .WithTarget("Restore;Pack")
+    .WithProperty("Version", PkgVersion)
     .WithProperty("GenerateLibraryLayout", "true")
     .WithProperty("OutputPath", srcDir);
 
@@ -124,7 +126,7 @@ Task("CollectExecutables")
             var file = DownloadFile(url);
             Information($"Downloaded {app} {Version} {runtime.runtimeName}");
 
-            var destPath = $"{outDir}/runtimes/{runtime.runtimeName}/FFMPEG";
+            var destPath = $"{outDir}/runtimes/{runtime.runtimeName}/MMTools";
             Unzip(file, destPath);
             
             // Clean up crap the OSX left behind.
@@ -148,16 +150,16 @@ Task("PackageExecutables")
 
     foreach(var runtime in Runtimes)
     {
-        var nugetID = $"FFTools.Executables.{runtime.os}.{runtime.arch}";
-        var nugetSrcPath = $"runtimes/{runtime.runtimeName}/FFMPEG";
+        var nugetID = $"MMTools.Executables.{runtime.os}.{runtime.arch}";
+        var nugetSrcPath = $"runtimes/{runtime.runtimeName}/MMTools";
         var filesPath = $"{outDir}/{nugetSrcPath}/**";
         var targetDest = $"build/{nugetID}.targets";
 
         var nuGetPackSettings   = new NuGetPackSettings {
             Id                       = nugetID,
-            Version                  = Version,
+            Version                  = PkgVersion,
             Title                    = nugetID,
-            Summary                  = $"FFMPEG Executables for FFTools on {runtime.os} {runtime.arch}",
+            Summary                  = $"Executables for MMTools on {runtime.os} {runtime.arch}",
             Symbols                  = false,
             NoPackageAnalysis        = true,
             Files                    = new [] {

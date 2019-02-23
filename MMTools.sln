@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.106
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MMTools", "MMTools\MMTools.csproj", "{7E22A4E5-DE29-4B11-A34E-216A0D9EE930}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1018380B-3B8A-4CB6-BCA7-4CCA8920F667}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MMTools.TestApp", "Tests\MMTools.TestApp\MMTools.TestApp.csproj", "{35033292-3096-4AE1-B741-8612DF3BD226}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7E22A4E5-DE29-4B11-A34E-216A0D9EE930}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E22A4E5-DE29-4B11-A34E-216A0D9EE930}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E22A4E5-DE29-4B11-A34E-216A0D9EE930}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E22A4E5-DE29-4B11-A34E-216A0D9EE930}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35033292-3096-4AE1-B741-8612DF3BD226}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35033292-3096-4AE1-B741-8612DF3BD226}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35033292-3096-4AE1-B741-8612DF3BD226}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35033292-3096-4AE1-B741-8612DF3BD226}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{35033292-3096-4AE1-B741-8612DF3BD226} = {1018380B-3B8A-4CB6-BCA7-4CCA8920F667}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D6C1818A-2D1B-4E0A-8CE5-C4BC90614F5F}
+	EndGlobalSection
+EndGlobal

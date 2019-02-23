@@ -2,6 +2,9 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <description>
+        Excutable binary package for MMTools.
+
+        **FFMPEG**
         Binaries from ffbinaries are hosted on GitHub: 
         https://github.com/vot/ffbinaries-prebuilt/releases 
         These are simply repackaged versions of packages provided by other people.
