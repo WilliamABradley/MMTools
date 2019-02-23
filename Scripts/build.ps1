@@ -184,6 +184,6 @@ if (!(Test-Path $CAKE_EXE)) {
 # Start Cake
 Write-Host "Running build script..."
 $path = Split-Path -Parent $MyInvocation.MyCommand.Definition
-$Script = "$path/BuildNativePackages.cake"
+$Script = "$path/build.cake"
 Invoke-Expression "& `"$CAKE_EXE`" `"$Script`" --settings_skipverification=true -verbosity=`"$Verbosity`" $UseMono $UseDryRun $UseExperimental $ScriptArgs"
 exit $LASTEXITCODE

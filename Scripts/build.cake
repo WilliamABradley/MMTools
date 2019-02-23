@@ -7,9 +7,15 @@
 var target = Argument("target", "Default");
 var baseDir = MakeAbsolute(Directory("../")).ToString();
 var currentDir = MakeAbsolute(Directory("./")).ToString();
+
+// FFTools Library
+var libraryPath = baseDir + "/FFTools/FFTools.csproj";
+
+// Executable Packaging
 var baseSpecPath = currentDir + "/NativeNugetSpec.nuspec";
 var baseTargetPath = currentDir + "/NativeNuget.targets";
 
+var srcDir = currentDir + "/bin";
 var outDir = currentDir + "/output";
 var publishDir = currentDir + "/publish";
 
@@ -69,8 +75,41 @@ string[] Applications = new string[]{
 // DEFAULT TASK
 //////////////////////////////////////////////////////////////////////
 
-Task("Collect")
+Task("CleanPublish")
+    .Description("Cleans the Destination folder")
+    .Does(() =>
+{
+    EnsureDirectoryExists(publishDir);
+    CleanDirectory(publishDir);
+});
+
+Task("Build")
+    .Description("Builds the Library")
+    .IsDependentOn("CleanPublish")
+    .Does(() =>
+{
+    EnsureDirectoryExists(srcDir);
+    CleanDirectory(srcDir);
+
+    Information($"\nBuilding {libraryPath}");
+    var buildSettings = new MSBuildSettings
+    {
+        MaxCpuCount = 0
+    }
+    .SetConfiguration("Release")
+    .WithTarget("Restore;Pack")
+    .WithProperty("GenerateLibraryLayout", "true")
+    .WithProperty("OutputPath", srcDir);
+
+    MSBuild(libraryPath, buildSettings);
+
+    var buildPackages = $"{srcDir}/**/*.nupkg"; 
+    CopyFiles(buildPackages, publishDir);
+});
+
+Task("CollectExecutables")
     .Description("Gathers the Executables from the Sources")
+    .IsDependentOn("Build")
     .Does(() =>
 {
     EnsureDirectoryExists(outDir);
@@ -100,13 +139,11 @@ Task("Collect")
     }
 });
 
-Task("Package")
+Task("PackageExecutables")
     .Description("Creates Native Nuget Packages from Executables")
-    .IsDependentOn("Collect")
+    .IsDependentOn("CollectExecutables")
     .Does(() =>
 {
-    EnsureDirectoryExists(publishDir);
-    CleanDirectory(publishDir);
     Information("Packing to " + publishDir);
 
     foreach(var runtime in Runtimes)
@@ -140,7 +177,7 @@ Task("Package")
 //////////////////////////////////////////////////////////////////////
 
 Task("Default")
-    .IsDependentOn("Package");
+    .IsDependentOn("PackageExecutables");
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION
