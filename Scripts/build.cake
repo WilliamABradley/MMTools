@@ -99,7 +99,7 @@ Task("Build")
     }
     .SetConfiguration("Release")
     .WithTarget("Restore;Pack")
-    .WithProperty("FFToolsVersion", PkgVersion)
+    .WithProperty("Version", PkgVersion)
     .WithProperty("GenerateLibraryLayout", "true")
     .WithProperty("OutputPath", srcDir);
 
@@ -157,7 +157,7 @@ Task("PackageExecutables")
 
         var nuGetPackSettings   = new NuGetPackSettings {
             Id                       = nugetID,
-            FFToolsVersion                  = PkgVersion,
+            Version                  = PkgVersion,
             Title                    = nugetID,
             Summary                  = $"Executables for MMTools on {runtime.os} {runtime.arch}",
             Symbols                  = false,
