@@ -1,4 +1,5 @@
 ﻿using MMTools.Exceptions;
+using MMTools.Options;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -11,24 +12,24 @@ namespace MMTools
     public static class MMToolsConfiguration
     {
         /// <summary>
-        /// Registers the Executable Directory for MMTools.
+        /// Registers the MMTools Configuration.
         /// </summary>
-        /// <param name="directory">
-        /// Directory of executables (Must be named just ffmpeg, ffprobe, etc. With/Without .exe on Windows).
-        /// If not provided, will use the default directory from NuGet.
-        /// </param>
-        public static void RegisterExecutableDirectory(string directory = null)
+        /// <param name="Options">Options for MMTools</param>
+        public static void Register(MMToolOptions Options = null)
         {
-            if (directory == null)
+            Options = new MMToolOptions();
+
+            if (string.IsNullOrWhiteSpace(Options.ExecutablesDirectory))
             {
-                directory = DefaultMMToolsDirectory();
+                Options.ExecutablesDirectory = DefaultMMToolsDirectory();
             }
 
-            _MMExecutableDirectory = directory;
-            if (!Directory.Exists(_MMExecutableDirectory))
+            if (!Directory.Exists(Options.ExecutablesDirectory))
             {
                 throw new MMExecutablesMissingException();
             }
+
+            _Options = Options;
         }
 
         /// <summary>
@@ -61,14 +62,14 @@ namespace MMTools
         }
 
         /// <summary>
-        /// The Directory for MMTools to use Executables.
+        /// MMTools Configuration Options. Must call <see cref="Register(MMToolOptions)"/> to be usable.
         /// </summary>
-        public static string MMExecutableDirectory
-            => _MMExecutableDirectory ?? throw new MMExecutablesMissingException();
+        public static MMToolOptions Options
+            => _Options ?? throw new MMNotRegisteredException();
 
         /// <summary>
-        /// Backing field for Executable Directory.
+        /// Backing Field for MMTools Options.
         /// </summary>
-        private static string _MMExecutableDirectory;
+        private static MMToolOptions _Options;
     }
 }

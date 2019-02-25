@@ -42,6 +42,9 @@ namespace MMTools.Runners
             AddArgNotNull(ref args, "t", Task.Output.Duration);
             AddArgNotNull(ref args, "#out", Task.Output.Output);
             AddArgNotNull(ref args, "y", Task.Output.Overwrite);
+
+            // Additional options
+            AddArgNotNull(ref args, "thread_queue_size", MMToolsConfiguration.Options.ThreadQueueSize);
         }
     }
 }

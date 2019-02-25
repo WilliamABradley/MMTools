@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>MMTools is an assistive wrapper for Multimedia Tools, for the needs of Multimedia applications.</Description>
   </PropertyGroup>
 
   <ItemGroup>

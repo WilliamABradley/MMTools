@@ -9,7 +9,7 @@ namespace MMTools.Runners
     {
         public MMRunner(MMAppType App)
         {
-            ApplicationPath = Path.Combine(MMToolsConfiguration.MMExecutableDirectory, App.ToString());
+            ApplicationPath = Path.Combine(MMToolsConfiguration.Options.ExecutablesDirectory, App.ToString());
         }
 
         public virtual async Task Run(string Arguments)

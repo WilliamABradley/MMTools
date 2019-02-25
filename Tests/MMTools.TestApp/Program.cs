@@ -7,7 +7,7 @@ namespace MMTools.TestApp
     {
         private static async Task Main(string[] args)
         {
-            MMToolsConfiguration.RegisterExecutableDirectory();
+            MMToolsConfiguration.Register();
 
             var ffRunner = new MMRunner(MMAppType.FFMPEG);
             await ffRunner.Run("-h");

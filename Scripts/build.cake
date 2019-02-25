@@ -9,6 +9,7 @@ var baseDir = MakeAbsolute(Directory("../")).ToString();
 var currentDir = MakeAbsolute(Directory("./")).ToString();
 
 // MMTools Library
+string PkgVersion = "1.0.0";
 var libraryPath = baseDir + "/MMTools/MMTools.csproj";
 
 // Executable Packaging
@@ -20,54 +21,53 @@ var outDir = currentDir + "/output";
 var publishDir = currentDir + "/publish";
 
 //////////////////////////////////////////////////////////////////////
-// MMTOOLS EXECUTABLES CONFIG
+// FFMPEG EXECUTABLES CONFIG
 //////////////////////////////////////////////////////////////////////
 
-string PkgVersion = "1.0.0";
-string Version = "4.1";
-string WindowsVersion = Version;
-string LinuxVersion = Version;
-string OSXVersion = "4.1.7";
+string FFToolsVersion = "4.1";
+string FFWindowsVersion = FFToolsVersion;
+string FFLinuxVersion = FFToolsVersion;
+string FFOSXVersion = "4.1.7";
 
-var Runtimes = new []{
+var FFRuntimes = new []{
     new {
         repoName = "win-32",
         runtimeName = "win-x86",
-        version = WindowsVersion,
+        version = FFWindowsVersion,
         os = "Windows",
         arch = "X86"
     },
     new {
         repoName = "win-64",
         runtimeName = "win-x64",
-        version = WindowsVersion,
+        version = FFWindowsVersion,
         os = "Windows",
         arch = "X64"
     },
     new {
         repoName = "linux-32",
         runtimeName = "linux-x86",
-        version = LinuxVersion,
+        version = FFLinuxVersion,
         os = "Linux",
         arch = "X86"
     },
     new {
         repoName = "linux-64",
         runtimeName = "linux-x64",
-        version = LinuxVersion,
+        version = FFLinuxVersion,
         os = "Linux",
         arch = "X64"
     },
     new {
         repoName = "osx-64",
         runtimeName = "osx-x64",
-        version = OSXVersion,
+        version = FFOSXVersion,
         os = "MacOS",
         arch = "X64"
     }
 };
 
-string[] Applications = new string[]{
+string[] FFApplications = new string[]{
     "ffmpeg",
     "ffprobe"
 };
@@ -99,7 +99,7 @@ Task("Build")
     }
     .SetConfiguration("Release")
     .WithTarget("Restore;Pack")
-    .WithProperty("Version", PkgVersion)
+    .WithProperty("FFToolsVersion", PkgVersion)
     .WithProperty("GenerateLibraryLayout", "true")
     .WithProperty("OutputPath", srcDir);
 
@@ -117,14 +117,14 @@ Task("CollectExecutables")
     EnsureDirectoryExists(outDir);
     CleanDirectory(outDir);
 
-    foreach (var app in Applications)
+    foreach (var app in FFApplications)
     {
-        foreach(var runtime in Runtimes)
+        foreach(var runtime in FFRuntimes)
         {
-            Information($"Downloading {app} {Version} {runtime.runtimeName}");
-            var url = $"https://github.com/vot/ffbinaries-prebuilt/releases/download/v{Version}/{app}-{runtime.version}-{runtime.repoName}.zip";
+            Information($"Downloading {app} {FFToolsVersion} {runtime.runtimeName}");
+            var url = $"https://github.com/vot/ffbinaries-prebuilt/releases/download/v{FFToolsVersion}/{app}-{runtime.version}-{runtime.repoName}.zip";
             var file = DownloadFile(url);
-            Information($"Downloaded {app} {Version} {runtime.runtimeName}");
+            Information($"Downloaded {app} {FFToolsVersion} {runtime.runtimeName}");
 
             var destPath = $"{outDir}/runtimes/{runtime.runtimeName}/MMTools";
             Unzip(file, destPath);
@@ -148,7 +148,7 @@ Task("PackageExecutables")
 {
     Information("Packing to " + publishDir);
 
-    foreach(var runtime in Runtimes)
+    foreach(var runtime in FFRuntimes)
     {
         var nugetID = $"MMTools.Executables.{runtime.os}.{runtime.arch}";
         var nugetSrcPath = $"runtimes/{runtime.runtimeName}/MMTools";
@@ -157,7 +157,7 @@ Task("PackageExecutables")
 
         var nuGetPackSettings   = new NuGetPackSettings {
             Id                       = nugetID,
-            Version                  = PkgVersion,
+            FFToolsVersion                  = PkgVersion,
             Title                    = nugetID,
             Summary                  = $"Executables for MMTools on {runtime.os} {runtime.arch}",
             Symbols                  = false,
