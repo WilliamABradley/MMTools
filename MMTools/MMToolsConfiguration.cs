@@ -17,7 +17,10 @@ namespace MMTools
         /// <param name="Options">Options for MMTools</param>
         public static void Register(MMToolOptions Options = null)
         {
-            Options = new MMToolOptions();
+            if(Options == null)
+            {
+                Options = new MMToolOptions();
+            }
 
             if (string.IsNullOrWhiteSpace(Options.ExecutablesDirectory))
             {

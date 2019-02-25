@@ -15,6 +15,9 @@ namespace MMTools.Runners
 
         protected override void AddArgs(ref List<KeyValuePair<string, object>> args)
         {
+            // Options
+            AddArgNotNull(ref args, "thread_queue_size", MMToolsConfiguration.Options.ThreadQueueSize);
+
             foreach (var input in Task.Inputs)
             {
                 AddArgNotNull(ref args, "framerate", input.FrameRate);
@@ -37,14 +40,11 @@ namespace MMTools.Runners
 
             // Output
             AddArgNotNull(ref args, "shortest", Task.Options.Shortest);
-            AddArgNotNull(ref args, "framerate", Task.Output.Duration);
+            AddArgNotNull(ref args, "framerate", Task.Output.FrameRate);
             AddArgNotNull(ref args, "vn", Task.Output.NoVideo);
             AddArgNotNull(ref args, "t", Task.Output.Duration);
             AddArgNotNull(ref args, "#out", Task.Output.Output);
             AddArgNotNull(ref args, "y", Task.Output.Overwrite);
-
-            // Additional options
-            AddArgNotNull(ref args, "thread_queue_size", MMToolsConfiguration.Options.ThreadQueueSize);
         }
     }
 }
