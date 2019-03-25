@@ -51,6 +51,15 @@ namespace MMTools.Runners
                 {
                     return $"-{entry.Key} {res.Width}x{res.Height}";
                 }
+                else if (entry.Value is MMInputOutputStream stream)
+                {
+                    StreamsForPipe.Add(stream);
+                    return $"-{entry.Key} \\\\.\\pipe\\mm-{StreamsForPipe.Count - 1}";
+                }
+                else if (entry.Value is MMInputOutputPath path)
+                {
+                    return $"-{entry.Key} {path.Path}";
+                }
                 // Not null
                 else if (entry.Value != null)
                 {

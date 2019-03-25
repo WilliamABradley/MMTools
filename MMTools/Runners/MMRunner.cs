@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Threading.Tasks;
 
 namespace MMTools.Runners
@@ -67,6 +69,37 @@ namespace MMTools.Runners
 
         protected int RunProcess(string program, string args = null)
         {
+            // Piping Streams.
+            for (int i = 0; i < StreamsForPipe.Count; i++)
+            {
+                var source = StreamsForPipe[i];
+                var direction = source.Input ? PipeDirection.In : PipeDirection.Out;
+
+                var pipeName = $"mm-{i}";
+                var pipe = new NamedPipeServerStream(pipeName, direction, 1, PipeTransmissionMode.Byte);
+                Task.Run(async () =>
+                {
+                    await pipe.WaitForConnectionAsync();
+
+                    Console.WriteLine($"Piping Stream {pipeName}");
+                    switch (direction)
+                    {
+                        case PipeDirection.Out:
+                            await source.Stream.CopyToAsync(pipe);
+                            await pipe.FlushAsync();
+                            break;
+
+                        case PipeDirection.In:
+                            await pipe.CopyToAsync(source.Stream);
+                            await source.Stream.FlushAsync();
+                            break;
+                    }
+
+                    source.Stream.Dispose();
+                    pipe.Dispose();
+                });
+            }
+
             var process = Process.Start(new ProcessStartInfo
             {
                 UseShellExecute = false,
@@ -87,5 +120,6 @@ namespace MMTools.Runners
         protected string OutputData { get; private set; }
         protected string ErrorData { get; private set; }
         public bool RunSync { get; set; }
+        protected List<MMInputOutputStream> StreamsForPipe { get; private set; } = new List<MMInputOutputStream>();
     }
 }

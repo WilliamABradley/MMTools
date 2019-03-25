@@ -25,6 +25,12 @@ namespace MMTools.Runners
                 AddArgNotNull(ref args, "t", input.Duration);
                 AddArgNotNull(ref args, "vsync", input.VSync?.ToString()?.ToLower());
                 AddArgNotNull(ref args, "i", input.Input);
+
+                // Ensure Marked as Input Stream.
+                if (input.Input is MMInputOutputStream stream)
+                {
+                    stream.Input = true;
+                }
             }
 
             // Video

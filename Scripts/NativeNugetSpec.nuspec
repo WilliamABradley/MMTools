@@ -20,5 +20,6 @@
         <license type="expression">GPL-2.0-or-later</license>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
         <authors>William Bradley, FFMPEG, FFBinaries, evermeet, johnvansickle, zeranoe</authors>
+        <projectUrl>https://github.com/WilliamABradley/MMTools</projectUrl>
     </metadata>
 </package>
