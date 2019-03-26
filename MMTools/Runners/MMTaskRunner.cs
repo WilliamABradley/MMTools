@@ -32,6 +32,17 @@ namespace MMTools.Runners
                 // Output File
                 if (entry.Key == "#out")
                 {
+                    if (entry.Value is IMMInputOutput io)
+                    {
+                        return GetPath(io);
+                    }
+                    else
+                    {
+                        return entry.Value;
+                    }
+                }
+                else if (entry.Key == "#extra")
+                {
                     return entry.Value;
                 }
                 // Flag
@@ -51,10 +62,9 @@ namespace MMTools.Runners
                 {
                     return $"-{entry.Key} {res.Width}x{res.Height}";
                 }
-                else if (entry.Value is MMInputOutputStream stream)
+                else if (entry.Value is IMMInputOutput io)
                 {
-                    StreamsForPipe.Add(stream);
-                    return $"-{entry.Key} \\\\.\\pipe\\mm-{StreamsForPipe.Count - 1}";
+                    return $"-{entry.Key} {GetPath(io)}";
                 }
                 else if (entry.Value is MMInputOutputPath path)
                 {
@@ -73,6 +83,21 @@ namespace MMTools.Runners
             }));
 
             return base.Run(argString);
+        }
+
+        private string GetPath(IMMInputOutput InputOutput)
+        {
+            if (InputOutput is MMInputOutputStream stream)
+            {
+                StreamsForPipe.Add(stream);
+                return $"\\\\.\\pipe\\mm-{StreamsForPipe.Count - 1}";
+            }
+            else if (InputOutput is MMInputOutputPath path)
+            {
+                return $"\"{path.Path}\"";
+            }
+
+            return null;
         }
     }
 }
