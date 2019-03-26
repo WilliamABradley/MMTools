@@ -17,7 +17,7 @@ namespace MMTools
         /// <param name="Options">Options for MMTools</param>
         public static void Register(MMToolOptions Options = null)
         {
-            if(Options == null)
+            if (Options == null)
             {
                 Options = new MMToolOptions();
             }
@@ -38,7 +38,6 @@ namespace MMTools
         /// <summary>
         /// Gets the Directory for FFMPEG executables for the Platform.
         /// </summary>
-        /// <returns></returns>
         private static string DefaultMMToolsDirectory()
         {
             string OSPath = null;
