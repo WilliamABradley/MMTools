@@ -17,7 +17,7 @@ namespace MMTools.Runners
 
         protected override void AddArgs(ref List<KeyValuePair<string, object>> args)
         {
-            AddArgNotNull(ref args, "i", Options.Input);
+            AddArgNotNull(ref args, "i", $"\"{Options.Input}\"");
             AddArgNotNull(ref args, "print_format", "json");
             AddArgNotNull(ref args, "show_format", true);
             AddArgNotNull(ref args, "show_streams", true);

@@ -5,7 +5,7 @@
     <Description>MMTools is an assistive wrapper for Multimedia Tools, for the needs of Multimedia applications.</Description>
     <PackageProjectUrl>https://github.com/WilliamABradley/MMTools</PackageProjectUrl>
     <Authors>williamabradley</Authors>
-    <Version>1.0.1</Version>
+    <Version>1.0.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +17,4 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
   </ItemGroup>
-
-
-
 </Project>

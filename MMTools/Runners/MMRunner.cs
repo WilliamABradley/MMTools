@@ -11,18 +11,27 @@ namespace MMTools.Runners
     {
         public MMRunner(MMAppType App)
         {
+            this.App = App;
             ApplicationPath = Path.Combine(MMToolsConfiguration.Options.ExecutablesDirectory, App.ToString());
         }
 
         public virtual async Task Run(string Arguments)
         {
-            var result = RunSync ? RunProcess(ApplicationPath, Arguments)
-                : await RunProcessAsync(ApplicationPath, Arguments);
+            int result = -1;
+            try
+            {
+                result = RunSync
+                    ? RunProcess(ApplicationPath, Arguments)
+                    : await RunProcessAsync(ApplicationPath, Arguments);
+            }
+            catch (Exception ex)
+            {
+                throw new MMExecutionException(App, ApplicationPath, Arguments, ErrorData, result, ex);
+            }
 
             if (result != 0)
             {
-                var appName = Path.GetFileName(ApplicationPath);
-                throw new Exception($"An error occurred with {ApplicationPath} ({result}): \n{ErrorData}");
+                throw new MMExecutionException(App, ApplicationPath, Arguments, ErrorData, result);
             }
         }
 
@@ -177,6 +186,7 @@ namespace MMTools.Runners
             }, pipe);
         }
 
+        protected MMAppType App { get; }
         protected string ApplicationPath { get; }
         protected string OutputData { get; private set; }
         protected string ErrorData { get; private set; }

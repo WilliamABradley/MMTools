@@ -9,7 +9,7 @@ var baseDir = MakeAbsolute(Directory("../")).ToString();
 var currentDir = MakeAbsolute(Directory("./")).ToString();
 
 // MMTools Library
-string PkgVersion = "1.0.1";
+string PkgVersion = "1.0.3";
 var libraryPath = baseDir + "/MMTools/MMTools.csproj";
 
 // Executable Packaging
@@ -72,6 +72,26 @@ string[] FFApplications = new string[]{
     "ffprobe"
 };
 
+/* var ExtraApplications = new []{
+    new {
+        appName = "mp3gain",
+        runtimes = new []{
+            new {
+                runtimeName = "linux-x64".
+                url = ""
+            },
+            new {
+                runtimeName = "win-x64",
+                url = "http://www.rarewares.org/files/aac/aacgain_1_9.zip"
+            },
+            new {
+                runtimeName = "osx-x64",
+                url = ""
+            }
+        }
+    }
+}; */
+
 //////////////////////////////////////////////////////////////////////
 // DEFAULT TASK
 //////////////////////////////////////////////////////////////////////
@@ -95,7 +115,8 @@ Task("Build")
     Information($"\nBuilding {libraryPath}");
     var buildSettings = new MSBuildSettings
     {
-        MaxCpuCount = 0
+        MaxCpuCount = 0,
+        ToolVersion = MSBuildToolVersion.VS2019
     }
     .SetConfiguration("Release")
     .WithTarget("Restore;Pack")
