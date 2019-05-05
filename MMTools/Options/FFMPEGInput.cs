@@ -4,7 +4,7 @@ namespace MMTools
 {
     public class FFMPEGInput : FFMPEGOptionsBase
     {
-        public string Input { get; set; }
+        public IMMInputOutput Input { get; set; }
         public double? InputOffset { get; set; }
         public VsyncType? VSync { get; set; }
     }

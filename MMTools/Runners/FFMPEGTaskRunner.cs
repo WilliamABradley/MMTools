@@ -21,11 +21,21 @@ namespace MMTools.Runners
             foreach (var input in Task.Inputs)
             {
                 AddArgNotNull(ref args, "framerate", input.FrameRate);
-                AddArgNotNull(ref args, "vsync", input.VSync?.ToString()?.ToLower());
                 AddArgNotNull(ref args, "itsoffset", input.InputOffset);
                 AddArgNotNull(ref args, "ss", input.Seek);
                 AddArgNotNull(ref args, "t", input.Duration);
+                AddArgNotNull(ref args, "vsync", input.VSync?.ToString()?.ToLower());
+                AddArgNotNull(ref args, "f", input.Format);
+                AddArgNotNull(ref args, "#extra", input.AdditionalArgs);
+
+                // Needs to be last input argument.
                 AddArgNotNull(ref args, "i", input.Input);
+
+                // Ensure Marked as Input Stream.
+                if (input.Input is MMInputOutputStream stream)
+                {
+                    stream.Input = true;
+                }
             }
 
             // Video
@@ -45,8 +55,13 @@ namespace MMTools.Runners
             // Output
             AddArgNotNull(ref args, "shortest", Task.Options.Shortest);
             AddArgNotNull(ref args, "framerate", Task.Output.FrameRate);
+            AddArgNotNull(ref args, "frames:v", Task.Output.Frames);
             AddArgNotNull(ref args, "vn", Task.Output.NoVideo);
             AddArgNotNull(ref args, "t", Task.Output.Duration);
+            AddArgNotNull(ref args, "f", Task.Output.Format);
+            AddArgNotNull(ref args, "#extra", Task.Output.AdditionalArgs);
+
+            // Output file.
             AddArgNotNull(ref args, "#out", Task.Output.Output);
             AddArgNotNull(ref args, "y", Task.Output.Overwrite);
         }

@@ -17,7 +17,12 @@ namespace MMTools
         /// <param name="Options">Options for MMTools</param>
         public static void Register(MMToolOptions Options = null)
         {
-            if(Options == null)
+            if (Registered)
+            {
+                throw new Exception("MMToolsConfiguration already registered");
+            }
+
+            if (Options == null)
             {
                 Options = new MMToolOptions();
             }
@@ -33,13 +38,13 @@ namespace MMTools
             }
 
             _Options = Options;
+            Registered = true;
         }
 
         /// <summary>
         /// Gets the Directory for FFMPEG executables for the Platform.
         /// </summary>
-        /// <returns></returns>
-        private static string DefaultMMToolsDirectory()
+        public static string DefaultMMToolsDirectory()
         {
             string OSPath = null;
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -74,5 +79,10 @@ namespace MMTools
         /// Backing Field for MMTools Options.
         /// </summary>
         private static MMToolOptions _Options;
+
+        /// <summary>
+        /// Is MMTools registered?
+        /// </summary>
+        public static bool Registered { get; private set; }
     }
 }
