@@ -9,11 +9,14 @@ namespace MMTools.Runners
     {
         public MMRunner(MMAppType App)
         {
+            this.AppType = App;
             ApplicationPath = Path.Combine(MMToolsConfiguration.Options.ExecutablesDirectory, App.ToString());
         }
 
         public virtual async Task Run(string Arguments)
         {
+            Console.WriteLine($"Executing {AppType} {Arguments}");
+
             var result = RunSync ? RunProcess(ApplicationPath, Arguments)
                 : await RunProcessAsync(ApplicationPath, Arguments);
 
@@ -46,11 +49,13 @@ namespace MMTools.Runners
             process.OutputDataReceived += (s, e) =>
             {
                 Console.WriteLine(e.Data);
+                OutputData += "\n" + e.Data;
             };
 
             process.ErrorDataReceived += (s, e) =>
             {
                 Console.WriteLine(e.Data);
+                ErrorData += "\n" + e.Data;
             };
 
             process.Exited += (s, e) =>
@@ -87,5 +92,6 @@ namespace MMTools.Runners
         protected string OutputData { get; private set; }
         protected string ErrorData { get; private set; }
         public bool RunSync { get; set; }
+        protected MMAppType AppType { get; }
     }
 }

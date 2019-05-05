@@ -21,9 +21,10 @@ namespace MMTools.Runners
             foreach (var input in Task.Inputs)
             {
                 AddArgNotNull(ref args, "framerate", input.FrameRate);
+                AddArgNotNull(ref args, "vsync", input.VSync?.ToString()?.ToLower());
+                AddArgNotNull(ref args, "itsoffset", input.InputOffset);
                 AddArgNotNull(ref args, "ss", input.Seek);
                 AddArgNotNull(ref args, "t", input.Duration);
-                AddArgNotNull(ref args, "vsync", input.VSync?.ToString()?.ToLower());
                 AddArgNotNull(ref args, "i", input.Input);
             }
 
@@ -37,6 +38,9 @@ namespace MMTools.Runners
             AddArgNotNull(ref args, "ac", Task.Options.AudioChannels);
             AddArgNotNull(ref args, "an", Task.Options.DisableAudioRecording);
             AddArgNotNull(ref args, "ar", Task.Options.AudioSamplingFrequency);
+
+            // Filters
+            //AddArgNotNull(ref args, "vf", "\"minterpolate=50,tblend=all_mode=average,framestep=2\"");
 
             // Output
             AddArgNotNull(ref args, "shortest", Task.Options.Shortest);
