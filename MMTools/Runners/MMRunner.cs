@@ -27,12 +27,12 @@ namespace MMTools.Runners
             }
             catch (Exception ex)
             {
-                throw new MMExecutionException(App, ApplicationPath, Arguments, ErrorData, result, ex);
+                throw new MMExecutionException(AppType, ApplicationPath, Arguments, ErrorData, result, ex);
             }
 
             if (result != 0)
             {
-                throw new MMExecutionException(App, ApplicationPath, Arguments, ErrorData, result);
+                throw new MMExecutionException(AppType, ApplicationPath, Arguments, ErrorData, result);
             }
         }
 
