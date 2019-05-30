@@ -26,6 +26,7 @@ namespace MMTools.Runners
                 AddArgNotNull(ref args, "t", input.Duration);
                 AddArgNotNull(ref args, "vsync", input.VSync?.ToString()?.ToLower());
                 AddArgNotNull(ref args, "f", input.Format);
+                AddArgNotNull(ref args, "start_number", input.StartNumber);
                 AddArgNotNull(ref args, "#extra", input.AdditionalArgs);
 
                 // Needs to be last input argument.
