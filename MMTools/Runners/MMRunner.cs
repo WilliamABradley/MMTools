@@ -21,9 +21,7 @@ namespace MMTools.Runners
             int result = -1;
             try
             {
-                result = RunSync
-                    ? RunProcess(ApplicationPath, Arguments)
-                    : await RunProcessAsync(ApplicationPath, Arguments);
+                result = await RunProcessAsync(ApplicationPath, Arguments);
             }
             catch (Exception ex)
             {
@@ -58,6 +56,29 @@ namespace MMTools.Runners
 
             process.OutputDataReceived += (s, e) =>
             {
+                if (e.Data == null)
+                {
+                    task.SetResult(process.ExitCode);
+                    try
+                    {
+                        process?.Dispose();
+                    }
+                    catch
+                    {
+                    }
+
+                    foreach (var pipe in Pipes)
+                    {
+                        try
+                        {
+                            pipe?.Dispose();
+                        }
+                        catch
+                        {
+                        }
+                    }
+                }
+
                 Console.WriteLine(e.Data);
                 OutputData += "\n" + e.Data;
             };
@@ -68,69 +89,10 @@ namespace MMTools.Runners
                 ErrorData += "\n" + e.Data;
             };
 
-            process.Exited += (s, e) =>
-            {
-                task.SetResult(process.ExitCode);
-                try
-                {
-                    process?.Dispose();
-                }
-                catch
-                {
-                }
-
-                foreach (var pipe in Pipes)
-                {
-                    try
-                    {
-                        pipe?.Dispose();
-                    }
-                    catch
-                    {
-                    }
-                }
-            };
-
             process.Start();
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
             return task.Task;
-        }
-
-        protected int RunProcess(string program, string args = null)
-        {
-            try
-            {
-                ConfigurePipes();
-
-                var process = Process.Start(new ProcessStartInfo
-                {
-                    UseShellExecute = false,
-                    FileName = program,
-                    Arguments = args,
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true
-                });
-
-                process.WaitForExit();
-                OutputData = process.StandardOutput.ReadToEnd();
-                ErrorData = process.StandardOutput.ReadToEnd();
-                return process.ExitCode;
-            }
-            finally
-            {
-                foreach (var pipe in Pipes)
-                {
-                    try
-                    {
-                        pipe?.Dispose();
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
         }
 
         private void ConfigurePipes()
