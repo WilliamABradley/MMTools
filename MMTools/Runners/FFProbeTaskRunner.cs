@@ -12,7 +12,7 @@ namespace MMTools.Runners
             : base(MMAppType.FFProbe)
         {
             this.Options = Options;
-            RunSync = true;
+            LogOutput = false;
         }
 
         protected override void AddArgs(ref List<KeyValuePair<string, object>> args)

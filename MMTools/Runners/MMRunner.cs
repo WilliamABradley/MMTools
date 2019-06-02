@@ -79,13 +79,19 @@ namespace MMTools.Runners
                     }
                 }
 
-                Console.WriteLine(e.Data);
+                if (LogOutput)
+                {
+                    Console.WriteLine(e.Data);
+                }
                 OutputData += "\n" + e.Data;
             };
 
             process.ErrorDataReceived += (s, e) =>
             {
-                Console.WriteLine(e.Data);
+                if (LogError)
+                {
+                    Console.WriteLine(e.Data);
+                }
                 ErrorData += "\n" + e.Data;
             };
 
@@ -154,7 +160,8 @@ namespace MMTools.Runners
         protected string ApplicationPath { get; }
         protected string OutputData { get; private set; }
         protected string ErrorData { get; private set; }
-        public bool RunSync { get; set; }
+        public bool LogOutput { get; set; } = true;
+        public bool LogError { get; set; } = true;
         protected MMAppType AppType { get; }
         protected List<MMInputOutputStream> StreamsForPipe { get; private set; } = new List<MMInputOutputStream>();
         private List<NamedPipeServerStream> Pipes = new List<NamedPipeServerStream>();
