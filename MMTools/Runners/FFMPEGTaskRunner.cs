@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace MMTools.Runners
 {
@@ -51,7 +52,19 @@ namespace MMTools.Runners
             AddArgNotNull(ref args, "ar", Task.Options.AudioSamplingFrequency);
 
             // Filters
-            //AddArgNotNull(ref args, "vf", "\"minterpolate=50,tblend=all_mode=average,framestep=2\"");
+            if (Task.Filters.Any())
+            {
+                AddArgNotNull(ref args, "filter_complex", "\"" + string.Join(";", Task.Filters) + "\"");
+            }
+
+            // Maps
+            if (Task.Output.Maps != null)
+            {
+                foreach (var map in Task.Output.Maps)
+                {
+                    AddArgNotNull(ref args, "map", map);
+                }
+            }
 
             // Output
             AddArgNotNull(ref args, "shortest", Task.Options.Shortest);
@@ -60,6 +73,7 @@ namespace MMTools.Runners
             AddArgNotNull(ref args, "vn", Task.Output.NoVideo);
             AddArgNotNull(ref args, "t", Task.Output.Duration);
             AddArgNotNull(ref args, "f", Task.Output.Format);
+            AddArgNotNull(ref args, "crf", Task.Output.ConstantRateFactor);
             AddArgNotNull(ref args, "#extra", Task.Output.AdditionalArgs);
 
             // Output file.

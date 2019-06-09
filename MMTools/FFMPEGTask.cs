@@ -12,7 +12,15 @@ namespace MMTools
 
         public FFMPEGTask AddInput(FFMPEGInput Input)
         {
+            InputIDCounter++;
+            Input.ID = InputIDCounter;
             Inputs.Add(Input);
+            return this;
+        }
+
+        public FFMPEGTask AddFilter(string Filter)
+        {
+            Filters.Add(Filter);
             return this;
         }
 
@@ -25,6 +33,8 @@ namespace MMTools
         public FFMPEGOptions Options { get; }
 
         public List<FFMPEGInput> Inputs { get; } = new List<FFMPEGInput>();
+        public List<string> Filters { get; } = new List<string>();
         public FFMPEGOutput Output { get; private set; }
+        private int InputIDCounter = -1;
     }
 }
