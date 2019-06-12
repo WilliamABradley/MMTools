@@ -2,7 +2,6 @@
 {
     public class FFMPEGOptions
     {
-        public MMResolution? Resolution { get; set; }
         public string VideoCodec { get; set; }
         public string PixelFormat { get; set; }
 

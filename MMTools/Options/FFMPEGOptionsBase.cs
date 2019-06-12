@@ -7,6 +7,8 @@
         /// </summary>
         public string Format { get; set; }
 
+        public MMResolution? Resolution { get; set; }
+
         public double? Seek { get; set; }
         public double? Duration { get; set; }
         public int? FrameRate { get; set; }

@@ -28,6 +28,7 @@ namespace MMTools.Runners
                 AddArgNotNull(ref args, "vsync", input.VSync?.ToString()?.ToLower());
                 AddArgNotNull(ref args, "f", input.Format);
                 AddArgNotNull(ref args, "start_number", input.StartNumber);
+                AddArgNotNull(ref args, "s", input.Resolution);
                 AddArgNotNull(ref args, "#extra", input.AdditionalArgs);
 
                 // Needs to be last input argument.
@@ -43,7 +44,6 @@ namespace MMTools.Runners
             // Video
             AddArgNotNull(ref args, "vcodec", Task.Options.VideoCodec);
             AddArgNotNull(ref args, "pix_fmt", Task.Options.PixelFormat);
-            AddArgNotNull(ref args, "s", Task.Options.Resolution);
 
             // Audio
             AddArgNotNull(ref args, "acodec", Task.Options.AudioCodec);
@@ -74,6 +74,7 @@ namespace MMTools.Runners
             AddArgNotNull(ref args, "t", Task.Output.Duration);
             AddArgNotNull(ref args, "f", Task.Output.Format);
             AddArgNotNull(ref args, "crf", Task.Output.ConstantRateFactor);
+            AddArgNotNull(ref args, "s", Task.Output.Resolution);
             AddArgNotNull(ref args, "#extra", Task.Output.AdditionalArgs);
 
             // Output file.
