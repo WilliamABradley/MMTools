@@ -9,7 +9,7 @@ var baseDir = MakeAbsolute(Directory("../")).ToString();
 var currentDir = MakeAbsolute(Directory("./")).ToString();
 
 // MMTools Library
-string PkgVersion = "1.0.3";
+string PkgVersion = "1.0.4";
 var libraryPath = baseDir + "/MMTools/MMTools.csproj";
 
 // Executable Packaging
@@ -71,26 +71,6 @@ string[] FFApplications = new string[]{
     "ffmpeg",
     "ffprobe"
 };
-
-/* var ExtraApplications = new []{
-    new {
-        appName = "mp3gain",
-        runtimes = new []{
-            new {
-                runtimeName = "linux-x64".
-                url = ""
-            },
-            new {
-                runtimeName = "win-x64",
-                url = "http://www.rarewares.org/files/aac/aacgain_1_9.zip"
-            },
-            new {
-                runtimeName = "osx-x64",
-                url = ""
-            }
-        }
-    }
-}; */
 
 //////////////////////////////////////////////////////////////////////
 // DEFAULT TASK
