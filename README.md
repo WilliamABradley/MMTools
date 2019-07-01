@@ -1,6 +1,6 @@
 # MMTools
 
-MMTools is a CLI Wrapper for various multimedia tools, such as FFMPEG, MP3Gain, etc.
+MMTools is a CLI Wrapper for various multimedia tools, such as FFMPEG, etc.
 
 ## MMTools Binary Packages
 
