@@ -9,7 +9,7 @@ var baseDir = MakeAbsolute(Directory("../")).ToString();
 var currentDir = MakeAbsolute(Directory("./")).ToString();
 
 // MMTools Library
-string PkgVersion = "1.0.4";
+string PkgVersion = "1.0.5";
 var libraryPath = baseDir + "/MMTools/MMTools.csproj";
 
 // Executable Packaging
