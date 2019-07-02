@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MMTools.Runners
@@ -17,7 +18,7 @@ namespace MMTools.Runners
 
         public virtual async Task Run(string Arguments)
         {
-            Console.WriteLine($"Executing {AppType} {Arguments}");
+            Console.WriteLine($"Executing {ApplicationPath} {Arguments}");
             int result = -1;
             try
             {
@@ -58,6 +59,18 @@ namespace MMTools.Runners
             {
                 if (e.Data == null)
                 {
+                    // Ensure Exited.
+                    if (!process.HasExited)
+                    {
+                        Console.WriteLine("Killing Process");
+                        try
+                        {
+                            process.Kill();
+                        }
+                        catch { }
+
+                        while (!process.HasExited) Thread.Sleep(5);
+                    }
                     task.SetResult(process.ExitCode);
                     try
                     {

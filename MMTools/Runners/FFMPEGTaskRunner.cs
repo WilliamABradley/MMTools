@@ -18,6 +18,7 @@ namespace MMTools.Runners
         {
             // Options
             AddArgNotNull(ref args, "thread_queue_size", MMToolsConfiguration.Options.ThreadQueueSize);
+            AddArgNotNull(ref args, "threads", MMToolsConfiguration.Options.ThreadLimit);
 
             foreach (var input in Task.Inputs)
             {

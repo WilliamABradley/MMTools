@@ -11,5 +11,10 @@
         /// The Thread Queue Size for FFMPEG.
         /// </summary>
         public int? ThreadQueueSize { get; set; }
+
+        /// <summary>
+        /// The Number of Threads to use for Tools.
+        /// </summary>
+        public int? ThreadLimit { get; set; }
     }
 }
