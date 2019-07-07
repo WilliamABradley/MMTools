@@ -19,6 +19,11 @@ namespace MMTools
         public int? ConstantRateFactor { get; set; }
 
         /// <summary>
+        /// Is the Video Configured for Fast Start.
+        /// </summary>
+        public bool FastStart { get; set; }
+
+        /// <summary>
         /// Set the number of video frames to output
         /// </summary>
         public int? Frames { get; set; }

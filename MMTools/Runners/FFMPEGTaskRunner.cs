@@ -76,6 +76,19 @@ namespace MMTools.Runners
             AddArgNotNull(ref args, "f", Task.Output.Format);
             AddArgNotNull(ref args, "crf", Task.Output.ConstantRateFactor);
             AddArgNotNull(ref args, "s", Task.Output.Resolution);
+
+            // Video Flags
+            var movFlags = new List<string>();
+            if (Task.Output.FastStart)
+            {
+                movFlags.Add("faststart");
+            }
+            if (movFlags.Any())
+            {
+                args.Add(new KeyValuePair<string, object>("movflags", string.Join(" ", movFlags.Select(f => $"+{f}"))));
+            }
+
+            // Extra Arguments
             AddArgNotNull(ref args, "#extra", Task.Output.AdditionalArgs);
 
             // Output file.
