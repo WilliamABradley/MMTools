@@ -16,29 +16,37 @@ namespace MMTools.Runners
             ApplicationPath = Path.Combine(MMToolsConfiguration.Options.ExecutablesDirectory, App.ToString().ToLower());
         }
 
-        public virtual async Task Run(string Arguments)
+        public virtual async Task<MMResult> Run(string Arguments)
         {
             Console.WriteLine($"Executing {ApplicationPath} {Arguments}");
-            int result = -1;
+            MMResult result;
             try
             {
                 result = await RunProcessAsync(ApplicationPath, Arguments);
             }
             catch (Exception ex)
             {
-                throw new MMExecutionException(AppType, ApplicationPath, Arguments, ErrorData, result, ex);
+                throw new MMExecutionException(AppType, ApplicationPath, Arguments, ErrorData, -1, ex);
             }
 
-            if (result != 0)
+            if (result.ResultCode != 0)
             {
-                throw new MMExecutionException(AppType, ApplicationPath, Arguments, ErrorData, result);
+                throw new MMExecutionException(AppType, ApplicationPath, Arguments, ErrorData, result.ResultCode);
+            }
+            else
+            {
+                return result;
             }
         }
 
-        protected Task<int> RunProcessAsync(string program, string args = null)
+        protected async Task<MMResult> RunProcessAsync(string program, string args = null)
         {
             ConfigurePipes();
-            var task = new TaskCompletionSource<int>();
+            var outputClosed = new TaskCompletionSource<bool>();
+            var errorClosed = new TaskCompletionSource<bool>();
+
+            List<string> Errors = new List<string>();
+            List<string> Output = new List<string>();
 
             // Create the Process
             var process = new Process
@@ -59,37 +67,8 @@ namespace MMTools.Runners
             {
                 if (e.Data == null)
                 {
-                    // Ensure Exited.
-                    if (!process.HasExited)
-                    {
-                        Console.WriteLine("Killing Process");
-                        try
-                        {
-                            process.Kill();
-                        }
-                        catch { }
-
-                        while (!process.HasExited) Thread.Sleep(5);
-                    }
-                    task.SetResult(process.ExitCode);
-                    try
-                    {
-                        process?.Dispose();
-                    }
-                    catch
-                    {
-                    }
-
-                    foreach (var pipe in Pipes)
-                    {
-                        try
-                        {
-                            pipe?.Dispose();
-                        }
-                        catch
-                        {
-                        }
-                    }
+                    outputClosed.SetResult(true);
+                    return;
                 }
 
                 if (LogOutput)
@@ -97,21 +76,75 @@ namespace MMTools.Runners
                     Console.WriteLine(e.Data);
                 }
                 OutputData += "\n" + e.Data;
+                Output.Add(e.Data);
             };
 
             process.ErrorDataReceived += (s, e) =>
             {
+                if (e.Data == null)
+                {
+                    errorClosed.SetResult(true);
+                    return;
+                }
+
                 if (LogError)
                 {
                     Console.WriteLine(e.Data);
                 }
                 ErrorData += "\n" + e.Data;
+                Errors.Add(e.Data);
             };
 
             process.Start();
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
-            return task.Task;
+
+            // Wait for Outputs to Close.
+            await Task.WhenAll(outputClosed.Task, errorClosed.Task);
+
+            // Ensure Exited.
+            if (!process.HasExited)
+            {
+                Console.WriteLine("Killing Process");
+                try
+                {
+                    process.Kill();
+                }
+                catch { }
+
+                while (!process.HasExited) Thread.Sleep(5);
+            }
+
+            // Store Status Code.
+            var statusCode = process.ExitCode;
+
+            // Dispose of the Process.
+            try
+            {
+                process?.Dispose();
+            }
+            catch
+            {
+            }
+
+            // Close Pipes.
+            foreach (var pipe in Pipes)
+            {
+                try
+                {
+                    pipe?.Dispose();
+                }
+                catch
+                {
+                }
+            }
+
+            return new MMResult
+            {
+                ResultCode = statusCode,
+                Output = Output.ToArray(),
+                Errors = Errors.ToArray()
+            };
         }
 
         private void ConfigurePipes()

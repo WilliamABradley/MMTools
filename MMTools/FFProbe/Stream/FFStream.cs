@@ -35,13 +35,13 @@ namespace MMTools.FFProbeConfig.Stream
         public string TimeBase { get; set; }
 
         [JsonProperty("start_pts")]
-        public int StartPTS { get; set; }
+        public long StartPTS { get; set; }
 
         [JsonProperty("start_time")]
         public double StartTime { get; set; }
 
         [JsonProperty("duration_ts")]
-        public int DurationTS { get; set; }
+        public long DurationTS { get; set; }
 
         public double Duration { get; set; }
 
@@ -49,7 +49,7 @@ namespace MMTools.FFProbeConfig.Stream
         public int Bitrate { get; set; }
 
         [JsonProperty("nb_frames")]
-        public int FrameCount { get; set; }
+        public long FrameCount { get; set; }
 
         public FFDisposition Disposition { get; set; }
         public Dictionary<string, string> Tags { get; set; }

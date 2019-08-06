@@ -21,7 +21,7 @@ namespace MMTools.Runners
             }
         }
 
-        public override Task Run(string Arguments = null)
+        public override Task<MMResult> Run(string Arguments = null)
         {
             var args = new List<KeyValuePair<string, object>>();
             AddArgs(ref args);

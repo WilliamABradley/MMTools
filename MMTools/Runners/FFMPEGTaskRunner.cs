@@ -59,9 +59,9 @@ namespace MMTools.Runners
             }
 
             // Maps
-            if (Task.Output.Maps != null)
+            if (Task.Options.Maps != null)
             {
-                foreach (var map in Task.Output.Maps)
+                foreach (var map in Task.Options.Maps)
                 {
                     AddArgNotNull(ref args, "map", map);
                 }
@@ -69,31 +69,39 @@ namespace MMTools.Runners
 
             // Output
             AddArgNotNull(ref args, "shortest", Task.Options.Shortest);
-            AddArgNotNull(ref args, "framerate", Task.Output.FrameRate);
-            AddArgNotNull(ref args, "frames:v", Task.Output.Frames);
-            AddArgNotNull(ref args, "vn", Task.Output.NoVideo);
-            AddArgNotNull(ref args, "t", Task.Output.Duration);
-            AddArgNotNull(ref args, "f", Task.Output.Format);
-            AddArgNotNull(ref args, "crf", Task.Output.ConstantRateFactor);
-            AddArgNotNull(ref args, "s", Task.Output.Resolution);
 
-            // Video Flags
-            var movFlags = new List<string>();
-            if (Task.Output.FastStart)
+            if (Task.Output != null)
             {
-                movFlags.Add("faststart");
+                AddArgNotNull(ref args, "framerate", Task.Output.FrameRate);
+                AddArgNotNull(ref args, "frames:v", Task.Output.Frames);
+                AddArgNotNull(ref args, "vn", Task.Output.NoVideo);
+                AddArgNotNull(ref args, "t", Task.Output.Duration);
+                AddArgNotNull(ref args, "f", Task.Output.Format);
+                AddArgNotNull(ref args, "crf", Task.Output.ConstantRateFactor);
+                AddArgNotNull(ref args, "s", Task.Output.Resolution);
+
+                // Video Flags
+                var movFlags = new List<string>();
+                if (Task.Output.FastStart)
+                {
+                    movFlags.Add("faststart");
+                }
+                if (movFlags.Any())
+                {
+                    args.Add(new KeyValuePair<string, object>("movflags", string.Join(" ", movFlags.Select(f => $"+{f}"))));
+                }
+
+                // Extra Arguments
+                AddArgNotNull(ref args, "#extra", Task.Output.AdditionalArgs);
+
+                // Output file.
+                AddArgNotNull(ref args, "#out", Task.Output.Output);
+                AddArgNotNull(ref args, "y", Task.Output.Overwrite);
             }
-            if (movFlags.Any())
+            else
             {
-                args.Add(new KeyValuePair<string, object>("movflags", string.Join(" ", movFlags.Select(f => $"+{f}"))));
+                args.Add(new KeyValuePair<string, object>("#extra", " -f null -"));
             }
-
-            // Extra Arguments
-            AddArgNotNull(ref args, "#extra", Task.Output.AdditionalArgs);
-
-            // Output file.
-            AddArgNotNull(ref args, "#out", Task.Output.Output);
-            AddArgNotNull(ref args, "y", Task.Output.Overwrite);
         }
     }
 }
