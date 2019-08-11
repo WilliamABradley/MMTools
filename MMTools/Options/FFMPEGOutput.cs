@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace MMTools
+﻿namespace MMTools
 {
     public class FFMPEGOutput : FFMPEGOptionsBase
     {
