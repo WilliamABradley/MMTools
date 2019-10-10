@@ -72,7 +72,12 @@ namespace MMTools.Runners
 
             if (Task.Output != null)
             {
-                AddArgNotNull(ref args, "framerate", Task.Output.FrameRate);
+                if (Task.Output.FrameRate.HasValue)
+                {
+                    args.Add(new KeyValuePair<string, object>("filter:v", $"fps=fps={Task.Output.FrameRate}"));
+                }
+
+                //AddArgNotNull(ref args, "framerate", Task.Output.FrameRate);
                 AddArgNotNull(ref args, "frames:v", Task.Output.Frames);
                 AddArgNotNull(ref args, "vn", Task.Output.NoVideo);
                 AddArgNotNull(ref args, "t", Task.Output.Duration);
