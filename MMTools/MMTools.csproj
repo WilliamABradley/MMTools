@@ -6,7 +6,15 @@
     <PackageProjectUrl>https://github.com/WilliamABradley/MMTools</PackageProjectUrl>
     <Authors>williamabradley</Authors>
     <Version>1.0.3</Version>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <Compile Remove=".nuget\**" />
