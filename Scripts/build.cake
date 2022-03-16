@@ -1,4 +1,4 @@
-#addin "Cake.FileHelpers"
+#addin nuget:https://api.nuget.org/v3/index.json?package=Cake.FileHelpers&version=5.0.0
 
 //////////////////////////////////////////////////////////////////////
 // VARIABLES
@@ -7,9 +7,10 @@
 var target = Argument("target", "Default");
 var baseDir = MakeAbsolute(Directory("../")).ToString();
 var currentDir = MakeAbsolute(Directory("./")).ToString();
+var certName = Argument("cert", "Developer ID Application: *");
 
 // MMTools Library
-string PkgVersion = "1.0.7";
+string PkgVersion = "1.0.9";
 var libraryPath = baseDir + "/MMTools/MMTools.csproj";
 
 // Executable Packaging
@@ -24,52 +25,72 @@ var publishDir = currentDir + "/publish";
 // FFMPEG EXECUTABLES CONFIG
 //////////////////////////////////////////////////////////////////////
 
-string FFToolsVersion = "4.1";
+string FFToolsVersion = "5.0";
 string FFWindowsVersion = FFToolsVersion;
 string FFLinuxVersion = FFToolsVersion;
-string FFOSXVersion = "4.1.7";
+string FFOSXVersion = FFToolsVersion;
 
 var FFRuntimes = new []{
     new {
-        repoName = "win-32",
+        repoName = "win32-ia32",
         runtimeName = "win-x86",
         version = FFWindowsVersion,
         os = "Windows",
         arch = "X86"
     },
     new {
-        repoName = "win-64",
+        repoName = "win32-x64",
         runtimeName = "win-x64",
         version = FFWindowsVersion,
         os = "Windows",
         arch = "X64"
     },
     new {
-        repoName = "linux-32",
+        repoName = "linux-ia32",
         runtimeName = "linux-x86",
         version = FFLinuxVersion,
         os = "Linux",
         arch = "X86"
     },
     new {
-        repoName = "linux-64",
+        repoName = "linux-x64",
         runtimeName = "linux-x64",
         version = FFLinuxVersion,
         os = "Linux",
         arch = "X64"
     },
     new {
-        repoName = "osx-64",
+        repoName = "linux-arm",
+        runtimeName = "linux-arm",
+        version = FFLinuxVersion,
+        os = "Linux",
+        arch = "ARM32"
+    },
+    new {
+        repoName = "linux-arm64",
+        runtimeName = "linux-arm64",
+        version = FFLinuxVersion,
+        os = "Linux",
+        arch = "ARM64"
+    },
+    new {
+        repoName = "darwin-x64",
         runtimeName = "osx-x64",
         version = FFOSXVersion,
         os = "MacOS",
         arch = "X64"
+    },
+    new {
+        repoName = "darwin-arm64",
+        runtimeName = "osx-arm64",
+        version = FFOSXVersion,
+        os = "MacOS",
+        arch = "ARM"
     }
 };
 
 string[] FFApplications = new string[]{
-    "ffmpeg",
-    "ffprobe"
+    "ffmpeg"
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -116,27 +137,63 @@ Task("CollectExecutables")
     .Does(() =>
 {
     EnsureDirectoryExists(outDir);
-    CleanDirectory(outDir);
+    //CleanDirectory(outDir);
 
     foreach (var app in FFApplications)
     {
         foreach(var runtime in FFRuntimes)
         {
             Information($"Downloading {app} {FFToolsVersion} {runtime.runtimeName}");
-            var url = $"https://github.com/vot/ffbinaries-prebuilt/releases/download/v{FFToolsVersion}/{app}-{runtime.version}-{runtime.repoName}.zip";
-            var file = DownloadFile(url);
-            Information($"Downloaded {app} {FFToolsVersion} {runtime.runtimeName}");
-
-            var destPath = $"{outDir}/runtimes/{runtime.runtimeName}/MMTools";
-            Unzip(file, destPath);
+            // https://github.com/eugeneware/ffmpeg-static/releases/download/b5.0/darwin-arm64
+            var url = $"https://github.com/eugeneware/ffmpeg-static/releases/download/b{FFToolsVersion}/{runtime.repoName}";
             
-            // Clean up crap the OSX left behind.
-            var macOSFolder = $"{destPath}/__MACOSX";
-            if(DirectoryExists(macOSFolder)){
-                DeleteDirectory(macOSFolder, new DeleteDirectorySettings {
-                    Recursive = true,
-                    Force = true
-                });
+            var destFolder = new DirectoryPath($"{outDir}/runtimes/{runtime.runtimeName}/MMTools");
+            EnsureDirectoryExists(destFolder);
+
+            var filename = "ffmpeg";
+            if (runtime.runtimeName.Contains("win"))
+                filename = filename + ".exe";
+            var destPath = destFolder.GetFilePath(filename);
+
+            if (FileExists(destPath))
+            {
+                Information($"Found {destPath}, will not download anything");
+            }
+            else
+            {
+                DownloadFile(url, destPath);
+                Information($"Downloaded {url} to {destPath}");
+            }
+
+            using(var process = StartAndReturnProcess("chmod", new ProcessSettings {
+                Silent = false,
+                RedirectStandardOutput = false,
+                RedirectStandardError = false,
+                Arguments = new ProcessArgumentBuilder()
+                    .Append("+x")
+                    .Append("\"" + destPath.FullPath + "\"")
+                }
+            )){
+                process.WaitForExit();
+            }
+
+            if (runtime.runtimeName.Contains("osx"))
+            {
+                using(var process = StartAndReturnProcess("codesign", new ProcessSettings {
+                    Silent = false,
+                    RedirectStandardOutput = false,
+                    RedirectStandardError = false,
+                    Arguments = new ProcessArgumentBuilder()
+                        .Append("--verbose=4")
+                        .Append("--deep")
+                        .Append("--force")
+                        .Append("-s")
+                        .Append("\"" + certName + "\"")
+                        .Append("\"" + destPath.FullPath + "\"")
+                    }
+                )){
+                    process.WaitForExit();
+                }
             }
         }
     }
@@ -152,8 +209,14 @@ Task("PackageExecutables")
     foreach(var runtime in FFRuntimes)
     {
         var nugetID = $"MMTools.Executables.{runtime.os}.{runtime.arch}";
-        var nugetSrcPath = $"runtimes/{runtime.runtimeName}/MMTools";
-        var filesPath = $"{outDir}/{nugetSrcPath}/**";
+        var nugetSrcPath = $"runtimes/{runtime.runtimeName}/MMTools/ffmpeg";
+
+        if (runtime.runtimeName.Contains("win"))
+        {
+            nugetSrcPath = nugetSrcPath + ".exe";
+        }
+
+        var filesPath = $"{outDir}/{nugetSrcPath}";
         var targetDest = $"build/{nugetID}.targets";
 
         var nuGetPackSettings   = new NuGetPackSettings {
@@ -164,7 +227,7 @@ Task("PackageExecutables")
             Symbols                  = false,
             NoPackageAnalysis        = true,
             Files                    = new [] {
-                new NuSpecContent { Source = filesPath },
+                new NuSpecContent { Source = filesPath, Target = nugetSrcPath },
                 new NuSpecContent { Source = baseTargetPath, Target = targetDest },
             },
             BasePath                 = outDir,
