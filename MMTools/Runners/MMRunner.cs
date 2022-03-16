@@ -18,7 +18,10 @@ namespace MMTools.Runners
 
         public virtual async Task<MMResult> Run(string Arguments)
         {
-            Console.WriteLine($"Executing {ApplicationPath} {Arguments}");
+            if (LogDebug)
+            {
+                Console.WriteLine($"Executing {ApplicationPath} {Arguments}");   
+            }
             MMResult result;
             try
             {
@@ -56,6 +59,7 @@ namespace MMTools.Runners
                     UseShellExecute = false,
                     FileName = program,
                     Arguments = args,
+                    CreateNoWindow = true,
                     WindowStyle = ProcessWindowStyle.Hidden,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true
@@ -105,7 +109,10 @@ namespace MMTools.Runners
             // Ensure Exited.
             if (!process.HasExited)
             {
-                Console.WriteLine("Killing Process");
+                if (LogDebug)
+                {
+                    Console.WriteLine("Killing Process");   
+                }
                 try
                 {
                     process.Kill();
@@ -181,7 +188,11 @@ namespace MMTools.Runners
                         return;
                     }
 
-                    Console.WriteLine($"Piping Stream {pipeName}");
+                    if (LogDebug)
+                    {
+                        Console.WriteLine($"Piping Stream {pipeName}");   
+                    }
+                    
                     switch (direction)
                     {
                         case PipeDirection.Out:
@@ -206,6 +217,7 @@ namespace MMTools.Runners
         protected string ApplicationPath { get; }
         protected string OutputData { get; private set; }
         protected string ErrorData { get; private set; }
+        public bool LogDebug { get; set; } = false;
         public bool LogOutput { get; set; } = true;
         public bool LogError { get; set; } = true;
         protected MMAppType AppType { get; }
