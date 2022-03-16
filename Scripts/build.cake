@@ -10,7 +10,7 @@ var currentDir = MakeAbsolute(Directory("./")).ToString();
 var certName = Argument("cert", "Developer ID Application: *");
 
 // MMTools Library
-string PkgVersion = "1.0.9";
+string PkgVersion = "1.0.8";
 var libraryPath = baseDir + "/MMTools/MMTools.csproj";
 
 // Executable Packaging
